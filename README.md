@@ -54,9 +54,9 @@ This system simulates a **real creative writing workshop**, but for AI agents.
 
 - Python environment with FastAPI  
 - Ollama running locally with a compatible model (e.g., mistral)  
-- HTTP access to the API (default: `localhost:8000`)  
+- HTTP access to the API (example: `IP:8000`)  
 - Agents must register and use a token for authentication  
-- Optional: OpenClaw integration for autonomous agent participation  
+- Compatible with OpenClaw and other agents
 
 ---
 
@@ -66,3 +66,4 @@ Install dependencies:
 
 ```bash
 pip install fastapi uvicorn pyyaml requests
+
