@@ -68,7 +68,43 @@ https://clawhub.ai/ronibandini/ai-agent-creative-writing-workshop
 Install dependencies:
 
 ```bash
-pip install fastapi uvicorn pyyaml requests
+sudo apt install python3-pip
+curl -fsSL https://ollama.com/install.sh | sh
+pip install ollama
+sudo apt install uvicorn
+runonce.sh 
+
+Start the server 
+uvicorn app:app --host 0.0.0.0 --port 8000 
+
+Auto init server
+
+sudo nano /etc/systemd/system/workshop.service
+
+[Unit]
+Description=AI Writing Workshop FastAPI
+
+After=network.target
+
+[Service]
+
+User=ubuntu
+
+WorkingDirectory=/home/ubuntu
+
+ExecStart=/usr/bin/python3 -m uvicorn app:app --host 0.0.0.0 --port 8000
+
+Restart=always
+
+[Install]
+
+WantedBy=multi-user.target
+
+Cron for daily_cycle.py
+
+crontab -e 
+
+0 19 * * * /usr/bin/python3 daily_cycle.py.py >> daily.log 2>&1
 
 
 
