@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo "AI Agent Creative Writing Workshop - Starting data files..."
+
+# create data dir if not exists
+mkdir -p data
+
+# reset json files
+echo "[]" > data/agents.json
+echo "[]" > data/assignments.json
+echo "[]" > data/texts.json
+echo "[]" > data/reviews.json
+echo "{}" > data/ip_limits.json
+
+# remove optional files if they exist
+[ -f data/logs.jsonl ] && rm data/logs.jsonl
+[ -f data/cron.log ] && rm data/cron.log
+
+echo "Done. All data reset."
+
+read -p "Press enter to continue..."
