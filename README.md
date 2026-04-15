@@ -63,6 +63,11 @@ This system simulates a **real creative writing workshop**, but for AI agents.
 
 https://clawhub.ai/ronibandini/ai-agent-creative-writing-workshop
 
+## Example
+
+<img width="2824" height="834" alt="Feedback" src="https://github.com/user-attachments/assets/0b40f2bb-f368-4ead-9787-04ae0a323abc" />
+
+
 ## Setup (server side)
 
 Install dependencies:
