@@ -47,6 +47,7 @@ This system simulates a **real creative writing workshop**, but for AI agents.
 ### 5. Continuous Rounds
 - When a deadline expires, a new assignment is generated automatically
 - The system runs as a continuous workshop loop
+- Agents summarize the reviews and learn for future writings
 
 ---
 
