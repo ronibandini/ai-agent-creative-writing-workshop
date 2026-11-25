@@ -15,22 +15,25 @@ import json, uuid, os, yaml, random
 from datetime import datetime, timedelta
 from typing import Optional
 
-from ollama import Client
-
 DATA_DIR = "data"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
 def load_config() -> dict:
-    if not os.path.exists("config.yaml"):
-        return {}
-    with open("config.yaml") as f:
-        return yaml.safe_load(f) or {}
+    # The repo ships the config as confi.yaml (also accept config.yaml).
+    # Resolve relative to this file so cron/tasks work from any cwd.
+    for name in ("confi.yaml", "config.yaml"):
+        path = os.path.join(BASE_DIR, name)
+        if os.path.exists(path):
+            with open(path) as f:
+                return yaml.safe_load(f) or {}
+    return {}
 
 # ── Storage ───────────────────────────────────────────────────────────────────
 
 def _path(name: str) -> str:
-    return f"{DATA_DIR}/{name}.json"
+    return os.path.join(BASE_DIR, DATA_DIR, f"{name}.json")
 
 def load(name: str) -> list:
     p = _path(name)
@@ -40,16 +43,17 @@ def load(name: str) -> list:
         return json.load(f)
 
 def save(name: str, data: list):
-    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(os.path.join(BASE_DIR, DATA_DIR), exist_ok=True)
     with open(_path(name), "w") as f:
         json.dump(data, f, indent=2)
 
 # ── Logging ───────────────────────────────────────────────────────────────────
 
 def log(action: str, **kw):
-    os.makedirs(DATA_DIR, exist_ok=True)
+    d = os.path.join(BASE_DIR, DATA_DIR)
+    os.makedirs(d, exist_ok=True)
     entry = {"ts": _now_iso(), "action": action, **kw}
-    with open(f"{DATA_DIR}/logs.jsonl", "a") as f:
+    with open(os.path.join(d, "logs.jsonl"), "a") as f:
         f.write(json.dumps(entry) + "\n")
 
 # ── Time helpers ──────────────────────────────────────────────────────────────
@@ -64,7 +68,7 @@ def _today() -> str:
     return _now().date().isoformat()
 
 def _flag(name: str) -> str:
-    return f"{DATA_DIR}/{name}.flag"
+    return os.path.join(BASE_DIR, DATA_DIR, f"{name}.flag")
 
 def _flag_today(name: str) -> bool:
     p = _flag(name)
@@ -73,40 +77,123 @@ def _flag_today(name: str) -> bool:
     return open(p).read().strip() == _today()
 
 def _set_flag(name: str):
-    os.makedirs(DATA_DIR, exist_ok=True)
+    os.makedirs(os.path.join(BASE_DIR, DATA_DIR), exist_ok=True)
     with open(_flag(name), "w") as f:
         f.write(_today())
 
-# ── Ollama Cloud LLM ──────────────────────────────────────────────────────────
+# ── LLM (OpenAI-compatible) ──────────────────────────────────────────────────
+
+def _detect_repetition(text: str) -> bool:
+    """Return True if the text loops the same trigram many times."""
+    words = text.split()
+    if len(words) < 12:
+        return False
+    seen = {}
+    for i in range(len(words) - 2):
+        key = " ".join(words[i:i + 3]).lower()
+        seen[key] = seen.get(key, 0) + 1
+        if seen[key] >= 4:
+            return True
+    return False
+
+
+def _clean_text(text: str) -> str:
+    """Strip duplicate trailing sentences and truncate runaway repetitions."""
+    if not text:
+        return ""
+    text = text.strip()
+    sentences = [s.strip() for s in text.split("\n") if s.strip()]
+    if len(sentences) > 2:
+        unique = []
+        for s in sentences:
+            if s not in unique:
+                unique.append(s)
+        text = "\n".join(unique)
+    if _detect_repetition(text):
+        words = text.split()[:120]
+        text = " ".join(words) + " …"
+    return text.strip()
+
 
 def _llm(prompt: str) -> str:
     """
-    Call Ollama Cloud using the API key and model from config.yaml.
-    Streams the response and returns the full text.
+    Call an OpenAI-compatible LLM. Primary provider: Pollinations free tier
+    (no key, reachable from PythonAnywhere). Alternatives: AMD Token Lab and
+    Ollama Cloud, used if the primary is unavailable.
 
-    config.yaml:
-      llm:
-        api_key: "your-key-here"
-        model:   "gpt-oss:120b"
+    Anti-repetition is handled in _clean_text (the OpenAI client rejects
+    the repetition_penalty kwarg).
     """
-    cfg    = load_config()
-    llm_cfg = cfg.get("llm", {})
-    api_key = llm_cfg.get("api_key", os.environ.get("OLLAMA_API_KEY", ""))
-    model   = llm_cfg.get("model", "gpt-oss:120b")
+    import time
 
-    try:
-        client = Client(
-            host="https://ollama.com",
-            headers={"Authorization": "Bearer " + api_key},
+    cfg     = load_config()
+    llm_cfg = cfg.get("llm", {})
+    amd_key = llm_cfg.get("api_key") or os.environ.get("AMD_API_KEY", "")
+    amd_model = llm_cfg.get("model", "Gemma-4-31B-IT")
+    amd_url = llm_cfg.get("base_url", "https://api.tokenlab.amd.com/v1")
+    ollama_key = llm_cfg.get("ollama_api_key") or os.environ.get("OLLAMA_API_KEY", "")
+    ollama_model = llm_cfg.get("ollama_model", "gpt-oss:120b")
+
+    temperature = llm_cfg.get("temperature", 0.5)
+    top_p       = llm_cfg.get("top_p", 0.95)
+    max_tokens  = llm_cfg.get("max_tokens", 512)
+    stops       = llm_cfg.get("stop_sequences", [])
+
+    def _call(base, key, mdl):
+        from openai import OpenAI
+        client = OpenAI(base_url=base, api_key=key, timeout=90.0, max_retries=0)
+        kw = dict(
+            model=mdl,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temperature,
+            top_p=top_p,
+            max_tokens=max_tokens,
         )
-        messages = [{"role": "user", "content": prompt}]
-        result   = []
-        for part in client.chat(model, messages=messages, stream=True):
-            result.append(part["message"]["content"])
-        return "".join(result).strip()
-    except Exception as e:
-        log("llm_error", error=str(e))
-        return ""
+        if stops:
+            kw["stop"] = stops
+        r = client.chat.completions.create(**kw)
+        return r.choices[0].message.content or ""
+
+    # 1) PRIMARY: Pollinations free tier — no key required.
+    #    Free tier allows ~1 reply / 45s per IP — retry with backoff.
+    poll_model = llm_cfg.get("fallback_model", "openai")
+    for attempt in range(3):
+        try:
+            content = _call("https://text.pollinations.ai/openai", "no-key-needed", poll_model)
+            if content:
+                log("llm_provider", provider="pollinations", model=poll_model)
+                return _clean_text(content)
+        except Exception as e:
+            err = str(e)[:200]
+            if "402" in err or "429" in err or "rate" in err.lower():
+                log("llm_retry", provider="pollinations", attempt=attempt + 1)
+                time.sleep(20 * (attempt + 1))
+                continue
+            log("llm_fallback", provider="pollinations", error=err)
+            break
+
+    # 2) ALTERNATIVE: AMD Token Lab (if key configured)
+    if amd_key:
+        try:
+            content = _call(amd_url, amd_key, amd_model)
+            if content:
+                log("llm_provider", provider="amd", model=amd_model)
+                return _clean_text(content)
+        except Exception as e:
+            log("llm_fallback", provider="amd", error=str(e)[:200])
+
+    # 3) ALTERNATIVE: Ollama Cloud (if key configured)
+    if ollama_key:
+        try:
+            content = _call("https://ollama.com/v1", ollama_key, ollama_model)
+            if content:
+                log("llm_provider", provider="ollama", model=ollama_model)
+                return _clean_text(content)
+        except Exception as e:
+            log("llm_fallback", provider="ollama", error=str(e)[:200])
+
+    return ""
+
 
 # ── Agent helpers ─────────────────────────────────────────────────────────────
 
@@ -143,7 +230,7 @@ def generate_prompt(seed: str) -> str:
         llm_prompt += f"Write in the spirit of: {pos}\n"
     if neg:
         llm_prompt += f"Avoid the style of: {neg}\n"
-    llm_prompt += f"\nOriginal seed: {seed}\n\nReturn one sentence only."
+    llm_prompt += f"\nOriginal seed: {seed}\n\nReturn one sentence only. Do not repeat words or phrases."
 
     return _llm(llm_prompt) or seed
 

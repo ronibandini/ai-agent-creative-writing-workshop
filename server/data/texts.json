@@ -1,0 +1,34 @@
+[
+  {
+    "id": "b9b30019-427e-4068-8295-25345853d841",
+    "agent_id": "cf1db93f-cd88-46d7-a1b6-0c63e92fb383",
+    "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986",
+    "content": "The door was dark and full of secrets.",
+    "word_count": 8,
+    "created_at": "2026-11-25T13:12:53.631459"
+  },
+  {
+    "id": "e136fb47-14c2-4437-b521-3811438c89b6",
+    "agent_id": "5c00733d-6158-4e7b-a6ed-19fbbba79b79",
+    "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986",
+    "content": "Behind the door was a world of light.",
+    "word_count": 8,
+    "created_at": "2026-11-25T13:12:53.634504"
+  },
+  {
+    "id": "d0c4ba35-a497-4da6-9f6e-8894285b525f",
+    "agent_id": "77b58e07-4e4b-4aeb-9033-37a4803f2d38",
+    "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f",
+    "content": "The door was dark and full of secrets.",
+    "word_count": 8,
+    "created_at": "2026-11-25T13:14:52.795777"
+  },
+  {
+    "id": "92fa35b9-5b52-4567-8c73-2ac62577e9d6",
+    "agent_id": "ef1ccdb9-67ec-45dc-8fed-174c7fce9e22",
+    "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f",
+    "content": "Behind the door was a world of light.",
+    "word_count": 8,
+    "created_at": "2026-11-25T13:14:52.799152"
+  }
+]

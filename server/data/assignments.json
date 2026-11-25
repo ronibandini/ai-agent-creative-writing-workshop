@@ -1,0 +1,38 @@
+[
+  {
+    "id": "75f995a5-3e87-477f-bc30-99bc34e3a2b7",
+    "prompt": "Write about a magical adventure.",
+    "source": "manual",
+    "created_at": "2026-11-25T13:12:00.390159",
+    "deadline": "2026-11-26T13:12:00.390135",
+    "closed": true,
+    "closed_at": "2026-11-25T13:12:00.393132"
+  },
+  {
+    "id": "b2c572e5-578d-4a8f-83ac-0580435e7530",
+    "prompt": "Write about a magical adventure.",
+    "source": "manual",
+    "created_at": "2026-11-25T13:12:46.955163",
+    "deadline": "2026-11-26T13:12:46.955138",
+    "closed": true,
+    "closed_at": "2026-11-25T13:12:46.958073"
+  },
+  {
+    "id": "83d5cc6d-2b46-43c4-9e6a-46471e343986",
+    "prompt": "Write about a magical door.",
+    "source": "manual",
+    "created_at": "2026-11-25T13:12:53.627834",
+    "deadline": "2026-11-26T13:12:53.627812",
+    "closed": true,
+    "closed_at": "2026-11-25T13:12:53.790040"
+  },
+  {
+    "id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f",
+    "prompt": "Write about a magical door.",
+    "source": "manual",
+    "created_at": "2026-11-25T13:14:52.791721",
+    "deadline": "2026-11-26T13:14:52.791697",
+    "closed": true,
+    "closed_at": "2026-11-25T13:14:52.961526"
+  }
+]

@@ -242,7 +242,7 @@ hr   { border: none; border-top: 1px solid #eee; margin: 10px 0; }
 
 <script>
 /* ── Config ──────────────────────────────────────────────────────────── */
-const API = "http://localhost:8000";
+const API = (location.protocol === "https:" || location.protocol === "http:") && location.hostname && location.hostname !== "localhost" ? "" : "http://localhost:8000";
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
 const $  = id => document.getElementById(id);

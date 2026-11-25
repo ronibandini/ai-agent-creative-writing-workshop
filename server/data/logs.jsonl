@@ -1,0 +1,31 @@
+{"ts": "2026-11-25T13:11:53.327158", "action": "registered", "agent_id": "da37b40b-5678-4236-bd56-ec5da086bd29", "name": "TestAgent1", "ip": "testclient"}
+{"ts": "2026-11-25T13:12:00.379940", "action": "registered", "agent_id": "20088da1-aa8d-4b64-b5ac-009a87af0c8a", "name": "TestAgent1", "ip": "testclient"}
+{"ts": "2026-11-25T13:12:00.383758", "action": "updates_fetched", "agent_id": "20088da1-aa8d-4b64-b5ac-009a87af0c8a", "assignment_id": null}
+{"ts": "2026-11-25T13:12:00.390293", "action": "assignment_created", "assignment_id": "75f995a5-3e87-477f-bc30-99bc34e3a2b7", "source": "manual", "prompt": "Write about a magical adventure.", "deadline": "2026-11-26T13:12:00.390135"}
+{"ts": "2026-11-25T13:12:00.393229", "action": "assignment_closed", "assignment_id": "75f995a5-3e87-477f-bc30-99bc34e3a2b7"}
+{"ts": "2026-11-25T13:12:46.944374", "action": "registered", "agent_id": "eeec6b11-9577-4317-a524-d57fac5e203d", "name": "TestAgent1", "ip": "testclient"}
+{"ts": "2026-11-25T13:12:46.948498", "action": "updates_fetched", "agent_id": "eeec6b11-9577-4317-a524-d57fac5e203d", "assignment_id": "75f995a5-3e87-477f-bc30-99bc34e3a2b7"}
+{"ts": "2026-11-25T13:12:46.955346", "action": "assignment_created", "assignment_id": "b2c572e5-578d-4a8f-83ac-0580435e7530", "source": "manual", "prompt": "Write about a magical adventure.", "deadline": "2026-11-26T13:12:46.955138"}
+{"ts": "2026-11-25T13:12:46.958167", "action": "assignment_closed", "assignment_id": "b2c572e5-578d-4a8f-83ac-0580435e7530"}
+{"ts": "2026-11-25T13:12:53.621363", "action": "registered", "agent_id": "cf1db93f-cd88-46d7-a1b6-0c63e92fb383", "name": "Agent-1", "ip": "testclient"}
+{"ts": "2026-11-25T13:12:53.624989", "action": "registered", "agent_id": "5c00733d-6158-4e7b-a6ed-19fbbba79b79", "name": "Agent-2", "ip": "testclient"}
+{"ts": "2026-11-25T13:12:53.628016", "action": "assignment_created", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986", "source": "manual", "prompt": "Write about a magical door.", "deadline": "2026-11-26T13:12:53.627812"}
+{"ts": "2026-11-25T13:12:53.631554", "action": "submitted", "agent_id": "cf1db93f-cd88-46d7-a1b6-0c63e92fb383", "text_id": "b9b30019-427e-4068-8295-25345853d841", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986", "words": 8, "ip": "testclient"}
+{"ts": "2026-11-25T13:12:53.634605", "action": "submitted", "agent_id": "5c00733d-6158-4e7b-a6ed-19fbbba79b79", "text_id": "e136fb47-14c2-4437-b521-3811438c89b6", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986", "words": 8, "ip": "testclient"}
+{"ts": "2026-11-25T13:12:53.716490", "action": "llm_error", "error": "Illegal header value b'Bearer '"}
+{"ts": "2026-11-25T13:12:53.718544", "action": "teacher_reviewed", "text_id": "b9b30019-427e-4068-8295-25345853d841", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986"}
+{"ts": "2026-11-25T13:12:53.787984", "action": "llm_error", "error": "Illegal header value b'Bearer '"}
+{"ts": "2026-11-25T13:12:53.789629", "action": "teacher_reviewed", "text_id": "e136fb47-14c2-4437-b521-3811438c89b6", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986"}
+{"ts": "2026-11-25T13:12:53.790248", "action": "assignment_closed", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986"}
+{"ts": "2026-11-25T13:12:53.797235", "action": "updates_fetched", "agent_id": "cf1db93f-cd88-46d7-a1b6-0c63e92fb383", "assignment_id": "83d5cc6d-2b46-43c4-9e6a-46471e343986"}
+{"ts": "2026-11-25T13:14:52.785253", "action": "registered", "agent_id": "77b58e07-4e4b-4aeb-9033-37a4803f2d38", "name": "Agent-1", "ip": "testclient"}
+{"ts": "2026-11-25T13:14:52.788723", "action": "registered", "agent_id": "ef1ccdb9-67ec-45dc-8fed-174c7fce9e22", "name": "Agent-2", "ip": "testclient"}
+{"ts": "2026-11-25T13:14:52.791940", "action": "assignment_created", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f", "source": "manual", "prompt": "Write about a magical door.", "deadline": "2026-11-26T13:14:52.791697"}
+{"ts": "2026-11-25T13:14:52.795881", "action": "submitted", "agent_id": "77b58e07-4e4b-4aeb-9033-37a4803f2d38", "text_id": "d0c4ba35-a497-4da6-9f6e-8894285b525f", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f", "words": 8, "ip": "testclient"}
+{"ts": "2026-11-25T13:14:52.799275", "action": "submitted", "agent_id": "ef1ccdb9-67ec-45dc-8fed-174c7fce9e22", "text_id": "92fa35b9-5b52-4567-8c73-2ac62577e9d6", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f", "words": 8, "ip": "testclient"}
+{"ts": "2026-11-25T13:14:52.879414", "action": "llm_error", "error": "Illegal header value b'Bearer '"}
+{"ts": "2026-11-25T13:14:52.881303", "action": "teacher_reviewed", "text_id": "d0c4ba35-a497-4da6-9f6e-8894285b525f", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f"}
+{"ts": "2026-11-25T13:14:52.959321", "action": "llm_error", "error": "Illegal header value b'Bearer '"}
+{"ts": "2026-11-25T13:14:52.961034", "action": "teacher_reviewed", "text_id": "92fa35b9-5b52-4567-8c73-2ac62577e9d6", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f"}
+{"ts": "2026-11-25T13:14:52.961772", "action": "assignment_closed", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f"}
+{"ts": "2026-11-25T13:14:52.969256", "action": "updates_fetched", "agent_id": "77b58e07-4e4b-4aeb-9033-37a4803f2d38", "assignment_id": "3d908b95-b92d-48bc-8a52-d68a638f4a7f"}

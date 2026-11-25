@@ -12,15 +12,15 @@ Lifecycle
   Any time : GET /updates returns current + previous assignment with reviews
 
 LLM
-  Uses Ollama Cloud (https://ollama.com) via the ollama Python client.
-  Set api_key and model in config.yaml under the `llm:` key,
-  or export OLLAMA_API_KEY as an environment variable.
+  Uses the AMD LLM API (https://api.tokenlab.amd.com/v1) via the OpenAI client.
+  Set api_key and model in confi.yaml under the `llm:` key,
+  or export AMD_API_KEY as an environment variable.
 
 IP rate limiting
   /register and /submit are limited to 20 requests per IP per UTC day.
 """
 
-from fastapi import FastAPI, Depends, Request, HTTPException
+from fastapi import FastAPI, Depends, Request, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -28,13 +28,15 @@ from pydantic import BaseModel
 from typing import Optional
 
 import uuid
+import os
+from datetime import datetime, timedelta
 
 from shared import (
     load_config, load, save, log,
     _now_iso,
     latest_assignment, is_open, create_assignment, run_teacher,
     agent_name, check_ip_limit,
-    _IP_DAILY_MAX,
+    _IP_DAILY_MAX, _set_flag,
 )
 
 # ── App ───────────────────────────────────────────────────────────────────────
@@ -55,7 +57,7 @@ app = FastAPI(
         "8. `POST /teacher/run` (Admin) — teacher reviews everything and closes.\n"
         "9. `GET /updates` — `current.closed=true`, teacher review in `reviews`.\n"
         "    Previous closed assignment appears in `previous`.\n\n"
-        "**LLM**: Ollama Cloud. Set `llm.api_key` and `llm.model` in config.yaml.\n\n"
+        "**LLM**: AMD API (OpenAI-compatible) at api.tokenlab.amd.com.\n\n"
         f"**Rate limit**: {_IP_DAILY_MAX} requests/IP/day on /register and /submit.\n"
     ),
     version="3.0",
@@ -67,6 +69,47 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Weekly auto-cycle (free-tier substitute for scheduled tasks) ─────────────
+# PythonAnywhere free accounts cannot create scheduled tasks, so the cycle runs
+# lazily on the first request of each new ISO week (guard: data/weekly.flag).
+
+def _weekly_flag_path():
+    d = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+    os.makedirs(d, exist_ok=True)
+    return os.path.join(d, "weekly.flag")
+
+
+def _maybe_weekly_cycle():
+    """Full weekly cycle: close/review old, new assignment, demo submit, teacher review."""
+    try:
+        iso_week = datetime.utcnow().strftime("%G-W%V")
+        flag = _weekly_flag_path()
+        if os.path.exists(flag) and open(flag).read().strip() == iso_week:
+            return
+        # Claim the week immediately so concurrent requests don't double-run.
+        with open(flag, "w") as f:
+            f.write(iso_week)
+
+        # Delegate to the canonical weekly cycle implementation.
+        from weekly_cycle import _close_and_review, _demo_submit
+        current = latest_assignment()
+        if current and not current.get("closed"):
+            _close_and_review(current)
+
+        new = create_assignment()
+        _demo_submit(new)
+        run_teacher(new)
+        log("weekly_cycle_auto", assignment_id=new["id"], week=iso_week)
+    except Exception as e:
+        log("weekly_cycle_error", error=str(e)[:300])
+
+@app.middleware("http")
+async def weekly_cycle_middleware(request: Request, call_next):
+    # Run only for normal API/UI requests, never for the docs internals storm.
+    if request.url.path not in ("/openapi.json", "/docs", "/docs/oauth2-redirect", "/redoc"):
+        _maybe_weekly_cycle()
+    return await call_next(request)
 
 # ── Auth dependency ───────────────────────────────────────────────────────────
 

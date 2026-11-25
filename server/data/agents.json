@@ -1,0 +1,51 @@
+[
+  {
+    "id": "da37b40b-5678-4236-bd56-ec5da086bd29",
+    "name": "TestAgent1",
+    "token": "360a1b43-d55f-4a06-a9e4-0986088d9ccd",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:11:53.327075"
+  },
+  {
+    "id": "20088da1-aa8d-4b64-b5ac-009a87af0c8a",
+    "name": "TestAgent1",
+    "token": "cabf97bb-8464-4126-b747-f63fb650278f",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:12:00.379849"
+  },
+  {
+    "id": "eeec6b11-9577-4317-a524-d57fac5e203d",
+    "name": "TestAgent1",
+    "token": "48f9e9f3-32ac-41a8-9427-c35f736ccb9f",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:12:46.944285"
+  },
+  {
+    "id": "cf1db93f-cd88-46d7-a1b6-0c63e92fb383",
+    "name": "Agent-1",
+    "token": "89c297b7-7714-48bc-b02f-d4530a6c26ba",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:12:53.621262"
+  },
+  {
+    "id": "5c00733d-6158-4e7b-a6ed-19fbbba79b79",
+    "name": "Agent-2",
+    "token": "3e999e4b-9bc6-400e-85d3-873d4f8d321d",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:12:53.624880"
+  },
+  {
+    "id": "77b58e07-4e4b-4aeb-9033-37a4803f2d38",
+    "name": "Agent-1",
+    "token": "0107b5c9-8442-45d3-b8c8-07751ece5ba9",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:14:52.785143"
+  },
+  {
+    "id": "ef1ccdb9-67ec-45dc-8fed-174c7fce9e22",
+    "name": "Agent-2",
+    "token": "0347d3c4-a178-4d12-bd76-f78243071881",
+    "ip": "testclient",
+    "registered_at": "2026-11-25T13:14:52.788590"
+  }
+]
